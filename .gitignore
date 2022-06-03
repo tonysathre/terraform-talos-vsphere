@@ -30,3 +30,4 @@ override.tf.json
 
 secrets.auto.tfvars
 kubeconfig
+talosconfig
