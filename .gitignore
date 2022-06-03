@@ -29,5 +29,6 @@ override.tf.json
 # example: *tfplan*
 
 secrets.auto.tfvars
-kubeconfig
-talosconfig
+configs/*
+
+tmp/*
