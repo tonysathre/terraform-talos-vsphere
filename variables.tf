@@ -49,15 +49,10 @@ variable "vsphere_network" {
   default = "VM Network"
 }
 
-variable "remote_ovf_url" {
-  type    = string
-  default = "https://github.com/siderolabs/talos/releases/download/v1.0.4/vmware-amd64.ova"
-}
-
 # Control Plane
 variable "control_plane_count" {
   type    = number
-  default = 3
+  default = 1
 }
 
 variable "control_plane_num_cpus" {
@@ -73,7 +68,7 @@ variable "control_plane_memory" {
 # Workers
 variable "worker_count" {
   type    = number
-  default = 4
+  default = 1
 }
 
 variable "worker_num_cpus" {
@@ -87,7 +82,22 @@ variable "worker_memory" {
 }
 
 # Talos
+variable "talos_installer_version" {
+  type    = string
+  default = "latest"
+}
+
+variable "kubelet_version" {
+  type    = string
+  default = "1.23.6"
+}
+
 variable "talos_vip_ip" {
   type    = string
   default = "10.0.0.40"
+}
+
+variable "remote_ovf_url" {
+  type    = string
+  default = "https://github.com/siderolabs/talos/releases/download/v1.0.4/vmware-amd64.ova"
 }
