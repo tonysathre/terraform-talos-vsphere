@@ -85,3 +85,9 @@ variable "worker_memory" {
   type    = number
   default = 4096
 }
+
+# Talos
+variable "talos_vip_ip" {
+  type    = string
+  default = "10.0.0.40"
+}
