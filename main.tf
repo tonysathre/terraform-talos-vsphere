@@ -64,20 +64,16 @@ module "kubernetes-cluster" {
   control_plane_num_cpus = var.control_plane_num_cpus
   control_plane_memory   = var.control_plane_memory
 
-  control_plane_disks = [
-    {
-      label            = "root"
-      size             = 10
-      thin_provisioned = false
-      eagerly_scrub    = true
-    }
-  ]
+  control_plane_disks = [{
+    label            = "root"
+    size             = 10
+    thin_provisioned = false
+    eagerly_scrub    = true
+  }]
 
-  control_plane_network_interfaces = [
-    {
+  control_plane_network_interfaces = [{
       name = var.vsphere_network
-    }
-  ]
+  }]
 
   control_plane_machine_network_hostnames = [
     "talos-controlplane-1",
@@ -86,7 +82,10 @@ module "kubernetes-cluster" {
   ]
 
   control_plane_machine_cert_sans = [
-    ["talos.ghostbit.org", "${var.talos_vip_ip}"]
+    [
+      "talos.ghostbit.org",
+      "${var.talos_vip_ip}"
+    ]
   ]
 
   control_plane_machine_network_interfaces = [
@@ -99,12 +98,10 @@ module "kubernetes-cluster" {
         addresses = [
           "10.0.0.31/24"
         ]
-        routes = [
-          {
-            network = "0.0.0.0/0"
-            gateway = "10.0.0.1"
-          }
-        ]
+        routes = [{
+          network = "0.0.0.0/0"
+          gateway = "10.0.0.1"
+        }]
       }
     ],
     [
@@ -116,12 +113,10 @@ module "kubernetes-cluster" {
         addresses = [
           "10.0.0.32/24"
         ]
-        routes = [
-          {
-            network = "0.0.0.0/0"
-            gateway = "10.0.0.1"
-          }
-        ]
+        routes = [{
+          network = "0.0.0.0/0"
+          gateway = "10.0.0.1"
+        }]
       }
     ],
     [
@@ -133,12 +128,10 @@ module "kubernetes-cluster" {
         addresses = [
           "10.0.0.33/24"
         ]
-        routes = [
-          {
-            network = "0.0.0.0/0"
-            gateway = "10.0.0.1"
-          }
-        ]
+        routes = [{
+          network = "0.0.0.0/0"
+          gateway = "10.0.0.1"
+        }]
       }
     ]
   ]
@@ -182,7 +175,10 @@ module "kubernetes-cluster" {
   ]
 
   worker_machine_cert_sans = [
-    ["talos.ghostbit.org", "${var.talos_vip_ip}"]
+    [
+      "talos.ghostbit.org",
+      "${var.talos_vip_ip}"
+    ]
   ]
 
   worker_machine_network_interfaces = [
@@ -192,12 +188,10 @@ module "kubernetes-cluster" {
         addresses = [
           "10.0.0.41/24"
         ]
-        routes = [
-          {
-            network = "0.0.0.0/0"
-            gateway = "10.0.0.1"
-          }
-        ]
+        routes = [{
+          network = "0.0.0.0/0"
+          gateway = "10.0.0.1"
+        }]
       }
     ],
     [
@@ -206,12 +200,10 @@ module "kubernetes-cluster" {
         addresses = [
           "10.0.0.42/24"
         ]
-        routes = [
-          {
-            network = "0.0.0.0/0"
-            gateway = "10.0.0.1"
-          }
-        ]
+        routes = [{
+          network = "0.0.0.0/0"
+          gateway = "10.0.0.1"
+        }]
       }
     ],
     [
@@ -220,12 +212,10 @@ module "kubernetes-cluster" {
         addresses = [
           "10.0.0.43/24"
         ]
-        routes = [
-          {
-            network = "0.0.0.0/0"
-            gateway = "10.0.0.1"
-          }
-        ]
+        routes = [{
+          network = "0.0.0.0/0"
+          gateway = "10.0.0.1"
+        }]
       }
     ],
     [
@@ -234,17 +224,19 @@ module "kubernetes-cluster" {
         addresses = [
           "10.0.0.44/24"
         ]
-        routes = [
-          {
-            network = "0.0.0.0/0"
-            gateway = "10.0.0.1"
-          }
-        ]
+        routes = [{
+          network = "0.0.0.0/0"
+          gateway = "10.0.0.1"
+        }]
       }
     ]
   ]
 
   cluster_name = "talos"
+  cluster_control_plane = {
+    endpoint = "talos.ghostbit.org"
+    localAPIServerPort = 443
+  }
   cluster_inline_manifests = [{
     name     = "namespace-mayastor"
     contents = <<-EOT
