@@ -233,10 +233,6 @@ module "kubernetes-cluster" {
   ]
 
   cluster_name = "talos"
-  cluster_control_plane = {
-    endpoint = "talos.ghostbit.org"
-    localAPIServerPort = 443
-  }
   cluster_inline_manifests = [{
     name     = "namespace-mayastor"
     contents = <<-EOT
