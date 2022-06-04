@@ -72,7 +72,7 @@ module "kubernetes-cluster" {
   }]
 
   control_plane_network_interfaces = [{
-      name = var.vsphere_network
+    name = var.vsphere_network
   }]
 
   control_plane_machine_network_hostnames = [
@@ -233,15 +233,70 @@ module "kubernetes-cluster" {
   ]
 
   cluster_name = "talos"
-  cluster_inline_manifests = [{
-    name     = "namespace-mayastor"
-    contents = <<-EOT
-      apiVersion: v1
-      kind: Namespace
+  cluster_inline_manifests = [
+    {
+      name     = "namespace-mayastor"
+      contents = <<-EOT
+        apiVersion: v1
+        kind: Namespace
+        metadata:
+          name: mayastor
+        EOT
+    },
+    {
+      name     = "mayastor-pool-worker-1"
+      contents = <<-EOT
+      apiVersion: "openebs.io/v1alpha1"
+      kind: MayastorPool
       metadata:
-        name: mayastor
+        name: pool-worker-1
+        namespace: mayastor
+      spec:
+        node: talos-worker-1
+        disks: ["/dev/sdb"]
       EOT
-  }]
+    },
+    {
+      name     = "mayastor-pool-worker-2"
+      contents = <<-EOT
+      apiVersion: "openebs.io/v1alpha1"
+      kind: MayastorPool
+      metadata:
+        name: pool-worker-2
+        namespace: mayastor
+      spec:
+        node: talos-worker-2
+        disks: ["/dev/sdb"]
+      EOT
+    },
+    {
+      name     = "mayastor-pool-worker-3"
+      contents = <<-EOT
+      apiVersion: "openebs.io/v1alpha1"
+      kind: MayastorPool
+      metadata:
+        name: pool-worker-3
+        namespace: mayastor
+      spec:
+        node: talos-worker-3
+        disks: ["/dev/sdb"]
+      EOT
+    },
+    {
+      name     = "mayastor-pool-worker-4"
+      contents = <<-EOT
+      apiVersion: "openebs.io/v1alpha1"
+      kind: MayastorPool
+      metadata:
+        name: pool-worker-4
+        namespace: mayastor
+      spec:
+        node: talos-worker-4
+        disks: ["/dev/sdb"]
+      EOT
+    }
+  ]
+
   cluster_extra_manifests = [
     "https://raw.githubusercontent.com/openebs/mayastor-control-plane/master/deploy/operator-rbac.yaml",
     "https://raw.githubusercontent.com/openebs/mayastor-control-plane/master/deploy/mayastorpoolcrd.yaml",
