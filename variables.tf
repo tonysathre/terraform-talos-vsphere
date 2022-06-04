@@ -52,7 +52,7 @@ variable "vsphere_network" {
 # Control Plane
 variable "control_plane_count" {
   type    = number
-  default = 1
+  default = 3
 }
 
 variable "control_plane_num_cpus" {
@@ -68,7 +68,7 @@ variable "control_plane_memory" {
 # Workers
 variable "worker_count" {
   type    = number
-  default = 1
+  default = 4
 }
 
 variable "worker_num_cpus" {
@@ -78,7 +78,7 @@ variable "worker_num_cpus" {
 
 variable "worker_memory" {
   type    = number
-  default = 4096
+  default = 8192
 }
 
 # Talos
@@ -87,17 +87,17 @@ variable "talos_installer_version" {
   default = "latest"
 }
 
-variable "kubelet_version" {
-  type    = string
-  default = "1.23.6"
-}
-
 variable "talos_vip_ip" {
   type    = string
   default = "10.0.0.40"
 }
 
-variable "remote_ovf_url" {
+variable "talos_version" {
   type    = string
-  default = "https://github.com/siderolabs/talos/releases/download/v1.0.4/vmware-amd64.ova"
+  default = "1.0.4"
+}
+
+variable "kubernetes_version" {
+  type    = string
+  default = "1.23.6"
 }

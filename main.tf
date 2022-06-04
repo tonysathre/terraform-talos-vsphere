@@ -7,14 +7,14 @@ provider "vsphere" {
 
 module "kubernetes-cluster" {
   source  = "ilpozzd/vsphere-cluster/talos"
-  version = "1.1.0"
+  version = "1.1.2"
 
   datacenter     = var.vsphere_datacenter
   datastores     = var.vsphere_datastore
   hosts          = var.vsphere_hosts
   resource_pool  = var.vsphere_resource_pool
   folder         = var.vsphere_folder
-  remote_ovf_url = var.remote_ovf_url
+  remote_ovf_url = "https://github.com/siderolabs/talos/releases/download/v${var.talos_version}/vmware-amd64.ova"
 
   # Base Machine Config
   machine_base_configuration = {
@@ -35,20 +35,20 @@ module "kubernetes-cluster" {
       rbac = true
     }
     kubelet = {
-      image = "ghcr.io/siderolabs/kubelet:v${var.kubelet_version}"
+      image = "ghcr.io/siderolabs/kubelet:v${var.kubernetes_version}"
       extraArgs = {
         node-labels = "openebs.io/engine=mayastor"
       }
-      # extraMounts = [{
-      #   type        = "bind"
-      #   source      = "/var/local"
-      #   destination = "/var/local"
-      #   options = [
-      #     "rbind",
-      #     "rshared",
-      #     "rw"
-      #   ]
-      # }]
+      extraMounts = [{
+        destination = "/var/local"
+        type        = "bind"
+        source      = "/var/local"
+        options = [
+          "rbind",
+          "rshared",
+          "rw"
+        ]
+      }]
     }
   }
 
@@ -66,8 +66,10 @@ module "kubernetes-cluster" {
 
   control_plane_disks = [
     {
-      label = "root"
-      size  = 20
+      label            = "root"
+      size             = 10
+      thin_provisioned = false
+      eagerly_scrub    = true
     }
   ]
 
@@ -148,33 +150,29 @@ module "kubernetes-cluster" {
 
   worker_disks = [
     {
-      label = "root"
-      size  = 20
+      label            = "root"
+      size             = 10
+      thin_provisioned = false
     },
     {
-      label = "storage"
-      size  = 40
+      label            = "storage"
+      size             = 40
+      thin_provisioned = false
+      eagerly_scrub    = true
     }
   ]
-
-  worker_machine_extra_configuration = {
-    sysctls = {
-      "vm.nr_hugepages" = "1024"
-    }
-    # disks = [{
-    #   device = "/dev/sdb"
-    #   partitions = [{
-    #     mountpoint = "/var/mnt/extra"
-    #     size       = "40 GB"
-    #   }]
-    # }]
-  }
 
   worker_network_interfaces = [
     {
       name = var.vsphere_network
     }
   ]
+
+  worker_machine_extra_configuration = {
+    sysctls = {
+      "vm.nr_hugepages" = "2048"
+    }
+  }
 
   worker_machine_network_hostnames = [
     "talos-worker-1",
@@ -248,7 +246,7 @@ module "kubernetes-cluster" {
 
   cluster_name = "talos"
   cluster_inline_manifests = [{
-    name = "namespace-mayastor"
+    name     = "namespace-mayastor"
     contents = <<-EOT
       apiVersion: v1
       kind: Namespace
@@ -256,8 +254,24 @@ module "kubernetes-cluster" {
         name: mayastor
       EOT
   }]
+  cluster_extra_manifests = [
+    "https://raw.githubusercontent.com/openebs/mayastor-control-plane/master/deploy/operator-rbac.yaml",
+    "https://raw.githubusercontent.com/openebs/mayastor-control-plane/master/deploy/mayastorpoolcrd.yaml",
+    "https://raw.githubusercontent.com/openebs/mayastor/master/deploy/nats-deployment.yaml",
+    "https://raw.githubusercontent.com/openebs/mayastor/master/deploy/etcd/storage/localpv.yaml",
+    "https://raw.githubusercontent.com/openebs/mayastor/master/deploy/etcd/statefulset.yaml",
+    "https://raw.githubusercontent.com/openebs/mayastor/master/deploy/etcd/svc.yaml",
+    "https://raw.githubusercontent.com/openebs/mayastor/master/deploy/etcd/svc-headless.yaml",
+    "https://raw.githubusercontent.com/openebs/mayastor/master/deploy/csi-daemonset.yaml",
+    "https://raw.githubusercontent.com/openebs/mayastor-control-plane/master/deploy/core-agents-deployment.yaml",
+    "https://raw.githubusercontent.com/openebs/mayastor-control-plane/master/deploy/rest-deployment.yaml",
+    "https://raw.githubusercontent.com/openebs/mayastor-control-plane/master/deploy/rest-service.yaml",
+    "https://raw.githubusercontent.com/openebs/mayastor-control-plane/master/deploy/csi-deployment.yaml",
+    "https://raw.githubusercontent.com/openebs/mayastor-control-plane/master/deploy/msp-deployment.yaml",
+    "https://raw.githubusercontent.com/openebs/mayastor/master/deploy/mayastor-daemonset.yaml"
+  ]
 
-  kubeconfig_path       = "./configs/kubeconfig"
-  talosconfig_path      = "./configs/talosconfig"
+  kubeconfig_path       = "C:\\Users\\Tony\\.kube\\config"
+  talosconfig_path      = "C:\\Users\\Tony\\.talos\\config"
   validity_period_hours = 18760
 }
