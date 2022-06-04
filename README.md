@@ -1,10 +1,18 @@
-# terraform-talos-vsphere
+# Deploy a [Talos](https://github.com/siderolabs/talos) cluster on VMware vSphere
 
 ## Setup
 
-```
-talosctl gen config talos https://talos.ghostbit.org --dns-domain ghostbit.org --output-dir configs
+Create secrets file
 
+```powershell
+@'
+vsphere_server   = "vcenter.domain.com"
+vsphere_user     = "administrator@vsphere.local"
+vsphere_password = "Passw0rd"
+'@ | Out-File secrets.auto.tfvars
+```
+
+```
 terraform init
 
 terraform plan
