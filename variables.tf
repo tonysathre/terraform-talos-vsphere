@@ -55,6 +55,15 @@ variable "control_plane_count" {
   default = 3
 }
 
+variable "control_plane_machine_network_hostnames" {
+  type = list(string)
+  default = [
+    "talos-controlplane-1",
+    "talos-controlplane-2",
+    "talos-controlplane-3"
+  ]
+}
+
 variable "control_plane_num_cpus" {
   type    = number
   default = 2
@@ -71,6 +80,16 @@ variable "worker_count" {
   default = 4
 }
 
+variable "worker_machine_network_hostnames" {
+  type = list(string)
+  default = [
+    "talos-worker-1",
+    "talos-worker-2",
+    "talos-worker-3",
+    "talos-worker-4"
+  ]
+}
+
 variable "worker_num_cpus" {
   type    = number
   default = 4
@@ -82,6 +101,11 @@ variable "worker_memory" {
 }
 
 # Talos
+variable "cluster_name" {
+  type    = string
+  default = "talos"
+}
+
 variable "talos_installer_version" {
   type    = string
   default = "latest"
